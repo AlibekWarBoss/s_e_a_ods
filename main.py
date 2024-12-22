@@ -1,3 +1,4 @@
+# Импорт библиотек
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -16,7 +17,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.layers import Permute, Reshape, Activation
 from sklearn.model_selection import train_test_split
 
-# Download NLTK resources
+# Установка ресурсов NLTK
 nltk.download('stopwords')
 nltk.download('wordnet')
 
@@ -24,7 +25,7 @@ lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
 
-# Text preprocessing function
+# Функция предобработки текста
 def preprocess_text(text):
     text = re.sub(r'\W', ' ', text)
     text = re.sub(r'\s+', ' ', text)
@@ -32,19 +33,19 @@ def preprocess_text(text):
     text = ' '.join([stemmer.stem(lemmatizer.lemmatize(word)) for word in text.split() if word not in stop_words])
     return text
 
-# Load combined data
+# Загрузка данных
 print("Loading combined data...")
 data = pd.read_csv('combined_data.csv')
 
-# Ensure correct column naming
+# Проверка правильности названия колонок
 data.columns = ['text', 'label']
 
-# Split data into text and labels
+# Разделение данных на текст и метки
 print("Splitting data...")
 X = data['text'].astype(str).apply(preprocess_text)
 y = data['label']
 
-# Tokenization and sequence padding for Bi-LSTM
+# Токенизация и паддинг
 print("Tokenizing and padding sequences...")
 tokenizer = Tokenizer(num_words=50000, oov_token="<OOV>")
 tokenizer.fit_on_texts(X)
@@ -52,10 +53,10 @@ X_seq = tokenizer.texts_to_sequences(X)
 max_length = 300
 X_padded = pad_sequences(X_seq, maxlen=max_length, padding='post')
 
-# Split into training and testing sets
+# Разделение на обучающую и тестовую выборки
 X_train, X_test, y_train, y_test = train_test_split(X_padded, y, test_size=0.2, random_state=42)
 
-# SMOTE for class imbalance
+# Применение SMOTE для устранения дисбаланса классов
 print("Balancing data with SMOTE...")
 try:
     smote = SMOTE(random_state=42)
@@ -66,7 +67,7 @@ except ValueError as e:
     print(f"SMOTE error: {e}. Proceeding without oversampling.")
     X_train_balanced, y_train_balanced = X_train, y_train
 
-# Attention layer implementation
+# Реализация слоя внимания
 def attention_layer(inputs):
     attention_weights = Dense(1, activation='tanh')(inputs)
     attention_weights = Flatten()(attention_weights)
@@ -76,7 +77,7 @@ def attention_layer(inputs):
     attention_output = Multiply()([inputs, attention_weights])
     return attention_output
 
-# Build Bi-LSTM model with CNN and attention
+# Построение модели Bi-LSTM с CNN и Attention
 print("Building Bi-LSTM model...")
 input_layer = Input(shape=(max_length,))
 embedding_layer = Embedding(input_dim=50000, output_dim=128, input_length=max_length)(input_layer)
@@ -92,10 +93,10 @@ model_bilstm = Model(inputs=input_layer, outputs=output_layer)
 
 model_bilstm.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4), loss='binary_crossentropy', metrics=['accuracy'])
 
-# Early stopping to prevent overfitting
+# Ранняя остановка для предотвращения переобучения
 early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
-# Train the Bi-LSTM model
+# Обучение модели
 print("Training Bi-LSTM model...")
 model_bilstm.fit(
     X_train_balanced, y_train_balanced,
@@ -106,7 +107,7 @@ model_bilstm.fit(
     verbose=1
 )
 
-# Evaluate the Bi-LSTM model
+# Оценка модели
 print("Evaluating Bi-LSTM model...")
 y_pred_bilstm = (model_bilstm.predict(X_test) > 0.5).astype(int)
 f1_bilstm = f1_score(y_test, y_pred_bilstm)
