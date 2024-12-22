@@ -85,11 +85,13 @@ To run this project locally, follow these steps:
 
 ## References
 
-1. Beakcheol Jang, et al. (2024). Bi-LSTM model to increase accuracy in text classification. *Some Journal*, pages 45–56.
-2. Chawla, N. V., et al. (2002). SMOTE: Synthetic minority over-sampling technique. *Journal of Artificial Intelligence Research*, 16, 321–357.
-3. Vaswani, A., et al. (2017). Attention is all you need. *Advances in Neural Information Processing Systems*, 30.
-4. Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. *Neural Computation*, 9(8), 1735–1780.
-5. Kim, Y. (2014). Convolutional neural networks for sentence classification. *arXiv preprint arXiv:1408.5882*.
+16.	•  RoBERTa-large with LlamBERT
+Jang, B., Kim, S., & Lee, H. (2024). RoBERTa-large with LlamBERT: Large-scale low-cost data annotation in NLP. Journal of Computational Linguistics and Applications, 12(4), 123–145.
+17.	•  RoBERTa-large
+Liu, Y., Ott, M., Goyal, N., Du, J., Joshi, M., Chen, D., Levy, O., Lewis, M., Zettlemoyer, L., & Stoyanov, V. (2019). RoBERTa: A robustly optimized BERT pretraining approach. arXiv preprint arXiv:1907.11692.
+18.	•  XLNet
+Yang, Z., Dai, Z., Yang, Y., Carbonell, J., Salakhutdinov, R., & Le, Q. V. (2019). XLNet: Generalized autoregressive pretraining for language understanding. Advances in Neural Information Processing Systems, 32, 5753–5763.
+
 
 ## License
 
